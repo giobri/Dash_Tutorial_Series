@@ -11,7 +11,7 @@ import plotly
 import time
 
 from dash.exceptions import PreventUpdate
-from dash.dependencies import Input, Output, State, Event
+from dash.dependencies import Input, Output, State
 from flask import Flask
 from plotly import graph_objs as go
 from plotly.graph_objs import *
@@ -57,9 +57,9 @@ app.layout = html.Div([
         className='row'
     ),
 
-    #block 2
+    # block 2
     html.Div([
-        dcc.Store(id = 'memory'),
+        dcc.Store(id='memory'),
         html.H3('Cars'),
         html.Div(
             [
@@ -67,14 +67,14 @@ app.layout = html.Div([
                     [
                         html.P('Models:'),
                         dcc.Dropdown(
-                                id = 'filter_x',
-                                options=[
-                                    {'label': 'No filter', 'value': 0},
-                                    {'label': '2', 'value': 1},
-                                    {'label': '3', 'value': 2},
-                                    {'label': '4', 'value': 3}
-                                ],
-                                value='0'
+                            id='filter_x',
+                            options=[
+                                {'label': 'No filter', 'value': 0},
+                                {'label': '2', 'value': 1},
+                                {'label': '3', 'value': 2},
+                                {'label': '4', 'value': 3}
+                            ],
+                            value='0'
                         ),
                     ],
                     className='three columns',
@@ -84,14 +84,14 @@ app.layout = html.Div([
                     [
                         html.P('Price:'),
                         dcc.Dropdown(
-                                id = 'filter_y',
-                                options=[
-                                    {'label': 'No filter', 'value': 0},
-                                    {'label': '1 to 20k', 'value': 1},
-                                    {'label': '20k to 30k', 'value': 2},
-                                    {'label': '30k+', 'value': 3}
-                                ],
-                                value='0'
+                            id='filter_y',
+                            options=[
+                                {'label': 'No filter', 'value': 0},
+                                {'label': '1 to 20k', 'value': 1},
+                                {'label': '20k to 30k', 'value': 2},
+                                {'label': '30k+', 'value': 3}
+                            ],
+                            value='0'
                         )
                     ],
                     className='three columns',
@@ -109,7 +109,7 @@ app.layout = html.Div([
                         html.Button('Previous Level', id='back_button')
                     ],
                     className='one columns',
-                    style={'margin-top': '40', 'margin-left':'50'}
+                    style={'margin-top': '40', 'margin-left': '50'}
                 )
             ],
             className='row'
@@ -120,74 +120,79 @@ app.layout = html.Div([
                 html.Div(
                     [
                         dcc.Graph(id='chart-2')
-                    ], className = "four columns", style = {'margin-top': 35,
-                                                            'padding': '15',
-                                                            'border': '1px solid #C6CCD5'}
+                    ], className="four columns", style={'margin-top': 35,
+                                                        'padding': '15',
+                                                        'border': '1px solid #C6CCD5'}
                 ),
-                html.Div(id = 'table-box'),
-                html.Div(dt.DataTable(id = 'table', data=[{}]), style={'display': 'none'})
-            ], className = 'row'
+                html.Div(id='table-box'),
+                html.Div(dt.DataTable(id='table', data=[{}]), style={'display': 'none'})
+            ], className='row'
         )
-    ], className = 'row',  style = {'margin-top': 20, 'border':
-                                    '1px solid #C6CCD5', 'padding': 15,
-                                    'border-radius': '5px'})
-], style = {'padding': '25px'})
+    ], className='row',  style={'margin-top': 20, 'border':
+                                '1px solid #C6CCD5', 'padding': 15,
+                                'border-radius': '5px'})
+], style={'padding': '25px'})
 
-#Table function
+# Table function
+
+
 def make_table(data, output):
     return html.Div(
-    [
-        dt.DataTable(
-            id = output,
-            data=data.to_dict('rows'),
-            columns=[{'id': c, 'name': c} for c in data.columns],
-            style_as_list_view=True,
-            filtering=False,
-            selected_rows=[],
-            style_cell={'padding': '5px',
-                        'whiteSpace': 'no-wrap',
-                        'overflow': 'hidden',
-                        'textOverflow': 'ellipsis',
-                        'maxWidth': 0,
-                        'height': 30,
-                        'textAlign': 'left'},
-            style_header={
-                'backgroundColor': 'white',
-                'fontWeight': 'bold',
-                'color': 'black'
-            },
-            style_cell_conditional=[],
-            virtualization=True,
-            pagination_mode=False,
-            n_fixed_rows=1
-        ),
-    ], className="seven columns", style = {'margin-top': '35',
-                                           'margin-left': '15',
-                                           'border': '1px solid #C6CCD5'}
-)
+        [
+            dt.DataTable(
+                id=output,
+                data=data.to_dict('rows'),
+                columns=[{'id': c, 'name': c} for c in data.columns],
+                style_as_list_view=True,
+                filtering=False,
+                selected_rows=[],
+                style_cell={'padding': '5px',
+                            'whiteSpace': 'no-wrap',
+                            'overflow': 'hidden',
+                            'textOverflow': 'ellipsis',
+                            'maxWidth': 0,
+                            'height': 30,
+                            'textAlign': 'left'},
+                style_header={
+                    'backgroundColor': 'white',
+                    'fontWeight': 'bold',
+                    'color': 'black'
+                },
+                style_cell_conditional=[],
+                virtualization=True,
+                pagination_mode=False,
+                n_fixed_rows=1
+            ),
+        ], className="seven columns", style={'margin-top': '35',
+                                             'margin-left': '15',
+                                             'border': '1px solid #C6CCD5'}
+    )
 
-def make_chart(df, x, y, label = 'Author', size = 'Size'):
+
+def make_chart(df, x, y, label='Author', size='Size'):
     graph = []
     if size == '':
         s = 15
     else:
         s = df[size]
     graph.append(go.Scatter(
-            x=df[x],
-            y=df[y],
-            mode='markers',
-            text = ['{}: {}'.format(label, a) for a in df[label]],
-            opacity=0.7,
-            marker={
-                'size': s,
-                'line': {'width': 0.5, 'color': 'white'}
-            },
-            name='X'
-        ))
+        x=df[x],
+        y=df[y],
+        mode='markers',
+        text=['{}: {}'.format(label, a) for a in df[label]],
+        opacity=0.7,
+        marker={
+            'size': s,
+            'line': {'width': 0.5, 'color': 'white'}
+        },
+        name='X'
+    ))
 
     return graph
 
 # Callbacks and functions
+
+
 @app.callback(dash.dependencies.Output('memory', 'data'),
               [dash.dependencies.Input('table', 'selected_cells'),
                dash.dependencies.Input('table', 'derived_virtual_data')],
@@ -200,7 +205,7 @@ def tab(sel, table, state):
         state['data'] = brands.to_dict('records')
         table = [{}]
     else:
-        state['data'] = table #save current table value afer it gets initialized
+        state['data'] = table  # save current table value afer it gets initialized
 
     # store information of selected rows to retrieve them when back button is clicked
     # information is stored in json format
@@ -213,13 +218,14 @@ def tab(sel, table, state):
 
     return state
 
+
 @app.callback(
     dash.dependencies.Output('table-box', 'children'),
     [dash.dependencies.Input('filter_x', 'value'),
-    dash.dependencies.Input('filter_y', 'value'),
-    dash.dependencies.Input('button_chart', 'n_clicks_timestamp'),
-    dash.dependencies.Input('back_button', 'n_clicks_timestamp'),
-    dash.dependencies.Input('table', 'selected_cells')],
+     dash.dependencies.Input('filter_y', 'value'),
+     dash.dependencies.Input('button_chart', 'n_clicks_timestamp'),
+     dash.dependencies.Input('back_button', 'n_clicks_timestamp'),
+     dash.dependencies.Input('table', 'selected_cells')],
     [dash.dependencies.State('memory', 'data')])
 def update_image_src(fx, fy, button, back, selected_cell, current_table):
     res = brands.copy()
@@ -268,7 +274,8 @@ def update_image_src(fx, fy, button, back, selected_cell, current_table):
     if selected_cell:
         print(current_table)
         if 'Average Price' in current_table['data'][0].keys():
-            res = models[models['Brand'] == current_table['data'][list(selected_cell)[0][0]]['Brand']]
+            res = models[models['Brand'] == current_table['data']
+                         [list(selected_cell)[0][0]]['Brand']]
         if 'Price' in current_table['data'][0].keys():
             res = sales[sales['Model'] == current_table['data'][list(selected_cell)[0][0]]['Model']]
         if 'Date' in current_table['data'][0].keys():
@@ -276,12 +283,13 @@ def update_image_src(fx, fy, button, back, selected_cell, current_table):
 
     return make_table(res, 'table')
 
+
 @app.callback(
     dash.dependencies.Output('chart-2', 'figure'),
     [dash.dependencies.Input('table', 'data')])
 def update_image_src(data):
     layout_individual = copy.deepcopy(layout)
-    layout_individual['legend'] = legend=dict(x=0.05, y=1)
+    layout_individual['legend'] = legend = dict(x=0.05, y=1)
 
     df = pd.DataFrame(data)
     graph = []
@@ -312,6 +320,7 @@ def update_image_src(data):
     }
 
     return figure
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
